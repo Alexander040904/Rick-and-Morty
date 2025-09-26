@@ -1,6 +1,6 @@
 //Funcion para traer los personajes desde la API
 
-import { Character } from "../../domain/character.entity";
+import { Character } from "../domain/character.entity";
 
 type ApiResponse = {
     info:{

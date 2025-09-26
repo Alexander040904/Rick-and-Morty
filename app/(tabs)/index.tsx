@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 // Asegúrate de que esta ruta de importación sea correcta según tu estructura de carpetas
 // El ejemplo asume que CharactersView está en 'src/views/CharactersView'
 
-import { CharactersView } from '@/src/features/characteres/infraestructure/view/CharactersView';
+import { CharactersView } from '@/src/features/characteres/presentation/screens/CharactersView';
 import { ThemedView } from '@/src/presentation/components/themed-view'; // Mantenemos ThemedView si está definido en tu proyecto
 
 export default function HomeScreen() {

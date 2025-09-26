@@ -1,10 +1,10 @@
-//CharactersView.tsx
-
 import { useEffect, useState } from "react";
 import { ActivityIndicator, Alert, FlatList, StyleSheet, Text, View } from "react-native";
-import { Character } from "../../domain/character.entity";
-import { CharacterCard } from "../components/Character";
-import { fetchCharacters } from "../datasource/fetchCharacters";
+
+import { Episode } from "../../domain/episode.entity";
+import { EpisodeCard } from "../components/Episode";
+
+import { fetchEpisode } from "../../datasource/fetchEpisodes";
 
 // Define un tipo para almacenar los metadatos de la API
 type PageInfo = {
@@ -14,11 +14,11 @@ type PageInfo = {
   pages: number;
 }
 
-export function CharactersView() {
+export function EpisodesView() {
 
   // Estados
   const [page, setPage] = useState(1);
-  const [characters, setCharacters] = useState<Character[]>([]);
+  const [episodes, setEpisodes] = useState<Episode[]>([]);
   const [info, setInfo] = useState<PageInfo | null>(null);
   const [isLoading, setIsLoading] = useState(false); // Nuevo estado para el loading
 
@@ -28,23 +28,23 @@ export function CharactersView() {
     setIsLoading(true);
 
     try {
-      const response = await fetchCharacters(pageToLoad);
+      const response = await fetchEpisode(pageToLoad);
 
       // 1. Almacenar los metadatos de paginación
       setInfo(response.info as unknown as PageInfo);
 
       // 2. Acumular los resultados (Infinite Scroll)
-      setCharacters(prevCharacters => {
+      setEpisodes(prevEpisodes => {
         // Filtra duplicados por si acaso, aunque la paginación debería prevenirlo
-        const newCharacters = response.results.filter(
-          (newChar) => !prevCharacters.some((existingChar) => existingChar.id === newChar.id)
+        const newEpisodes = response.results.filter(
+          (newEpisode) => !prevEpisodes.some((existingEpisode) => existingEpisode.id === newEpisode.id)
         );
-        return [...prevCharacters, ...newCharacters];
+        return [...prevEpisodes, ...newEpisodes];
       });
 
     } catch (error) {
-      console.error("Error al cargar personajes:", error);
-      Alert.alert("Error", "No se pudieron cargar los personajes.");
+      console.error("Error al cargar episodios:", error);
+      Alert.alert("Error", "No se pudieron cargar los episodios.");
     } finally {
       setIsLoading(false);
     }
@@ -75,7 +75,7 @@ export function CharactersView() {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#00ff00" />
-        <Text style={styles.loadingText}>Cargando más personajes...</Text>
+        <Text style={styles.loadingText}>Cargando más episodios...</Text>
       </View>
     );
   };
@@ -87,13 +87,13 @@ export function CharactersView() {
       <View>
         {/* Mostrar el conteo total dinámico si está disponible */}
         <Text style={styles.total}>{info ? info.count : '...'}</Text>
-        <Text style={styles.personajestitulo}>Personajes</Text>
+        <Text style={styles.personajestitulo}>Episodios</Text>
       </View>
 
       <FlatList
-        data={characters}
+        data={episodes}
         keyExtractor={item => item.id.toString()}
-        renderItem={({ item }) => <CharacterCard character={item as any} />}
+        renderItem={({ item }) => <EpisodeCard episode={item as any} />}
         // Propiedades para Infinite Scroll
         onEndReached={loadNextPage}
         onEndReachedThreshold={0.5} // Empieza a cargar cuando el usuario está a la mitad de la vista (0.5 = 50%)
