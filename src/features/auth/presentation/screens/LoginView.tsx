@@ -1,65 +1,80 @@
+import { firebaseConfig } from '@/firebase-config';
+import { IconSymbol } from '@/src/presentation/components/ui/icon-symbol';
+import { initializeApp } from "firebase/app";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+
 import React, { useState } from 'react';
-import {
-    Button,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    View
-} from 'react-native';
+import { Button, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 
 export function LoginView() {
   // Estados para almacenar el email y la contraseña
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+
   // Función de ejemplo para manejar el login
   const handleLogin = () => {
-    // Aquí es donde harías la lógica real de autenticación
-    console.log('Intentando iniciar sesión con:', { email, password });
-    alert(`Intentando iniciar sesión con Email: ${email}`);
-    // Podrías añadir navegación, llamadas a API, etc.
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        alert(`Bienvenido de nuevo, ${user.email}`);
+        // ...
+      })
+      .catch((error) => {
+
+        const errorMessage = error.message;
+        alert(`Error: ${errorMessage}`);
+      });
+
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-    <View  style={styles.info}>
-   <Text style={styles.title}>Login 👋</Text>
-      <Text>ssssssssssssssssssssssssss</Text>
-    </View>
-   
-      
-      {/* Campo de Correo Electrónico */}
-      <TextInput
-        style={styles.input}
-        placeholder="Correo Electrónico"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-      
-      {/* Campo de Contraseña */}
-      <TextInput
-        style={styles.input}
-        placeholder="Contraseña"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry // Oculta la entrada de texto
-      />
-      
+      <View style={styles.info}>
+        <Text style={styles.title}>Login</Text>
+        <Text>Inicia con una cuente existente</Text>
+      </View>
+      {/* Campo de Correo Electrónico con ícono */}
+      <View style={styles.inputContainer}>
+        <IconSymbol size={28} name="envelope.fill" color="#989A9B" />
+        <TextInput
+          style={styles.inputWithIcon}
+          placeholder="Correo Electrónico"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+      </View>
+
+      {/* Campo de Contraseña con ícono */}
+      <View style={styles.inputContainer}>
+        <IconSymbol size={28} name="lock.fill" color="#989A9B" />
+        <TextInput
+          style={styles.inputWithIcon}
+          placeholder="Contraseña"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+        />
+      </View>
       {/* Botón de Login */}
       <View style={styles.buttonContainer}>
         <Button
-        
+
           title="Entrar"
           onPress={handleLogin}
-          color="#0d5f1fff" // Un color azul moderno
-          
-          
-          disabled={!email || !password} // Deshabilita si faltan campos
+          color="#36B47E"
         />
       </View>
+
+      <Text style={styles.footerText}>
+        ¿No tienes una cuenta? <Text style={styles.link}> Registrate</Text>
+      </Text>
 
 
 
@@ -71,20 +86,25 @@ export function LoginView() {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1, // Permite que el ScrollView ocupe toda la pantalla
-    paddingVertical: 50,
+    paddingVertical: 150,
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#ffffffff', // Fondo suave
+    backgroundColor: '#F6F8FA', // Fondo suave
   },
   title: {
     fontSize: 28,
-  
+
     fontWeight: 'bold',
     marginBottom: 10,
     color: '#333',
   },
-  info:{
-      paddingVertical:80,
+  info: {
+    paddingVertical: 40,
+    alignItems: 'center',
+  },
+  link: {
+    color: '#3BB37B',
+    fontWeight: 'bold',
   },
   input: {
     width: '100%',
@@ -107,14 +127,30 @@ const styles = StyleSheet.create({
     marginTop: 10,
     borderRadius: 12,
     overflow: 'hidden', // Para que el borde redondeado afecte al botón en Android
-    
+
   },
   footerText: {
     marginTop: 25,
     fontSize: 14,
     color: '#555',
   },
-  button:{
-    backgroundColor:'#2511d6ff'
+
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#fff',
+    borderRadius: 20,
+    paddingHorizontal: 10,
+    marginBottom: 15,
+    height: 50,
+    elevation: 2,
+  },
+  inputWithIcon: {
+    flex: 1,
+    marginLeft: 10,
+    fontSize: 16,
   }
 });

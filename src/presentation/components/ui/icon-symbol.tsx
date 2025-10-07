@@ -20,7 +20,10 @@ const MAPPING = {
   'list.bullet.rectangle.fill': 'view-list',
   'chevron.left.forwardslash.chevron.right': 'code',
   'chevron.right': 'chevron-right',
+  'envelope.fill': 'email',      // Ícono para el email
+  'lock.fill': 'lock',            // Ícono para la contraseña
 } as IconMapping;
+
 
 /**
  * An icon component that uses native SF Symbols on iOS, and Material Icons on Android and web.
